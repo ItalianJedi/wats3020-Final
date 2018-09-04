@@ -1,9 +1,57 @@
+let musicArray = [];
+let currentMood = null;
+let moodQ = document.querySelector('#moodQuestion');
+let moodsUL = document.querySelector('#music');
 
+
+
+// function for the current question
+function yourMood(slug){
+	currentMood = musicQuiz[slug];
+	return currentMood;
+}
+// function for an array of choice
+function recordChoice(slug){
+	musicArray.push(slug);
+}
+
+// function for next question
+function nextQuestion(slug){
+	recordChoice(slug);
+	currentMood = yourMood(slug);
+	updatePage(currentMood);
+}
+
+// TODO: create a function that will update the questions from the slug
+function updatePage(page) {
+	moodQ.innerHTML = page.text;
+	// Creating a new Array based on moods
+	moodsUL.innerHTML = '';
+		for (mood of page.moods){
+			let newLI = document.createElement('li');
+			newLI.innerHTML = mood.text;
+			newLI.setAttribute('data-slug', mood.link);
+			moodsUL.appendChild(newLI);
+	}
+	addEventListeners();
+}
+
+// TODO: create an event listener that will hear the click of the button
+function addEventListeners(){
+	let moods = document.querySelectorAll('#music li');
+	for (mood of moods){
+		mood.addEventListener('click', function(e){
+			newQuestion(e.target.dataset.slug);
+		})
+	}
+}
+
+// data object for current moods and recommendation
+// When asked "What are you in the mood for?" you are given three options to select.
 var musicQuiz = {
-	title: "The (not-so) Ultimate Music Quiz!",
 	q1: {
-		text: `What genre of music are you into?`,
-		choices: [
+		text: `What are you in the mood for?`,
+		moods: [
 			{
 				text: `Chillwave`,
 				link: 'chillwave'
@@ -16,9 +64,10 @@ var musicQuiz = {
 			}
 		]
 	},
+	// When selecting "Chillwave" you are given option
 	chillwave: {
 		text: `Chillwave? Great choice! How do you want to chill?`
-		choices: [
+		moods: [
 			{
 				text: `Drive through Portland`,
 				link: 'c1'
@@ -33,7 +82,7 @@ var musicQuiz = {
 	},
 	rock: {
 		text: `Rock? Oh, this is a broad genre!`
-		choices: [
+		moods: [
 			{
 				text: `Drinking beer by the river`,
 				link: 'r1'
@@ -48,7 +97,7 @@ var musicQuiz = {
 	},
 	hipHop: {
 		text: `Hip Hop. You must like good beats!`
-		choices: [
+		moods: [
 			{
 				text: `Gimmie some classic hip hop`,
 				link: 'h1'
@@ -62,3 +111,8 @@ var musicQuiz = {
 		]
 	}
 }
+
+
+// This is supposed to be where quiz starts
+currentMood = musicQuiz.q1;
+updatePage('currentMood');
